@@ -1,6 +1,11 @@
 const canva = document.querySelector('.frame')
 const ctx = canva.getContext('2d')
 
+const canvaDimension = {
+    width: canva.width,
+    height: canva.height
+}
+
 //Global variable for this file 
 
 const posMouse = {
@@ -33,7 +38,12 @@ canva.addEventListener('click', (event)=>{
 
 const main = ()=>{
     window.requestAnimationFrame(main)
-    console.log('bordel')
+
 }
 
 main()
+
+
+const map = new Mapping(ctx)
+
+map.tree
