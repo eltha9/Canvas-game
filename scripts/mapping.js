@@ -70,13 +70,17 @@ class Mapping{
     /*
     * Sub build parts
     */
-    tree(){
+    tree(rationTree = this.ratio){
 
-        this.ctx.strokeStyle ='black'
+
+
+
+        this.ctx.fillStyle ='black'
         this.ctx.beginPath()
         this.ctx.moveTo(100,100)
         this.ctx.bezierCurveTo(150,150,250,150,300,100)
-        this.ctx.stroke()
+        this.ctx.lineTo(100,100)
+        this.ctx.fill()
 
     }
 
