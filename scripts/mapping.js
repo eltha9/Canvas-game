@@ -1,37 +1,12 @@
-const tree = ()=>{
-    console.log('tree')
-}
-
-const forest = ()=>{
-    const setPoint = Math.floor(Math.random()*3)+3
-    let firstPoint = {
-        x : null,
-        y : null
-    }
-    let tempPoint = {
-        x : null,
-        y : null
-    }
-
-    ctx.beginPath()
-    for(let i = 0; i<setPoint; i++){
-        if(i ===0){
-            firstPoint.x = Math.floor(Math.random()*canvaDimension.width)        
-            firstPoint.y = Math.floor(Math.random()*canvaDimension.height)        
-        }
-    }
-
-}
-
 class Mapping{
-    constructor(ctx, x,y, ratio=1,){
-        this.x = x
-        this.y = y
+    constructor(ctx,width,height, ratio=1){
+        this.width = width
+        this.height = height
         this.ratio = ratio
         this.ctx = ctx
 
         /*
-        * Texture
+        * TEXTURE
         */
         //soil texture
         this.soilTexture = {
@@ -58,11 +33,28 @@ class Mapping{
             darkLeaves: "hsl(104, 81%, 18%)" // dark green
         }
 
+        /*
+        * HIT BOX'S
+        */
+       this.hitBox = {
+           rock: {
+               w: undefined, // width of the box
+               h: undefined  // height of the box
+           },
+           tree: {
+               w: undefined,
+               h: undefined
+           }
+       }
+
+
 
         /*
         * GENERAL DATA MAPPING
         */
-        this.tree = [] //table of object like: {x:,y:,quantity:}
+        this.trees = [] //table of object like: {x:,y:,quantity:}
+        this.rocks = [] //table of object like: {x:,y:,quantity:}
+        this.golds = [] //table of object like: {x:,y:,quantity:}
 
 
     }
@@ -70,25 +62,55 @@ class Mapping{
     /*
     * Sub build parts
     */
-    tree(rationTree = this.ratio){
+    tree(x=0,y=0, ratio =1){ //x and y top left of the box 
+        this.ctx.save()
 
 
+        //trunk
+        this.ctx.fillStyle = this.treeTexture.trunk
+        this.ctx.strokeStyle = 'black'
 
-
-        this.ctx.fillStyle ='black'
-        this.ctx.beginPath()
-        this.ctx.moveTo(100,100)
-        this.ctx.bezierCurveTo(150,150,250,150,300,100)
-        this.ctx.lineTo(100,100)
+        this.ctx.rect(2*ratio+x,8*ratio+y,3*ratio,4*ratio)
         this.ctx.fill()
+        this.ctx.stroke()
 
+        //leaves
+        this.ctx.fillStyle = this.treeTexture.darkLeaves
+        this.ctx.lineWidth = 1.5
+        this.ctx.strokeStyle = this.treeTexture.leaves
+
+        this.ctx.beginPath()
+        this.ctx.moveTo(0*ratio+x,8*ratio+y)
+        this.ctx.lineTo(4*ratio+x,0*ratio+y)
+        this.ctx.lineTo(7*ratio+x,8*ratio+y)
+        this.ctx.bezierCurveTo(4*ratio+x,10*ratio+y,3*ratio+x,10*ratio+y,0*ratio+x,8*ratio+y)
+        this.ctx.fill()
+        this.ctx.stroke()
+
+        //leaves separation 1 down
+        this.ctx.lineWidth = 2
+
+        this.ctx.globalCompositeOperation = 'source-atop'
+        this.ctx.beginPath()
+        this.ctx.moveTo(1*ratio+x,5*ratio+y)
+        this.ctx.bezierCurveTo(3*ratio+x,6*ratio+y,4*ratio+x,6*ratio+y,6*ratio+x,5*ratio+y)
+        this.ctx.stroke()
+
+        //leaves separation 2 up
+        this.ctx.globalCompositeOperation = 'source-atop'
+        this.ctx.beginPath()
+        this.ctx.moveTo(2*ratio+x,2*ratio+y)
+        this.ctx.bezierCurveTo(3.5*ratio+x,3*ratio+y,4.5*ratio+x,3*ratio+y,6*ratio+x,2*ratio+y)
+        this.ctx.stroke()
+
+        this.ctx.restore()
     }
 
     rock(){
 
     }
 
-    golderShower(){
+    goldenShower(){
 
     }
     /*
@@ -106,7 +128,7 @@ class Mapping{
     * Main build method 
     */
     create(){
-
+        
     }
 
     
