@@ -9,9 +9,9 @@ class People{
         this.x = x
         this.y = y
         this.ratio = ratio
-
+        this.select = false 
         this.type = categorie
-
+        this.speed = 2
         /*
         * PEOPLE SPEC BY TYPE
         */
@@ -60,20 +60,36 @@ class People{
                 //nada because i have no idea 
         }
 
+        this.hitBox = {
+            x: null, 
+            y: null,
+            w: null,
+            h: null
+        }
 
     }
     
-    create(x=0,y=0){
-        this.ctx.save()
+    create(){
+        this.ctx.save()        
         this.ctx.beginPath()
-        this.ctx.strokeStyle = "black"
-        this.ctx.fillStyle ='orange'
-
-        this.ctx.rect(x,y,40,60)
-        this.ctx.restore()
-        this.ctx.stroke()
+        this.ctx.fillStyle = "black"
+        this.ctx.arc(this.x, this.y, 20, 0,Math.PI*2)
         this.ctx.fill()
-        
+        this.ctx.restore()
+
+        this.hitBox.x = this.x -20
+        this.hitBox.y = this.y -20
+        this.hitBox.h = 20*2
+        this.hitBox.w = 20*2
+
+        if(this.select){
+            this.ctx.save()
+            this.ctx.strokeStyle = "red"
+            this.ctx.beginPath()
+            this.ctx.rect(this.hitBox.x,this.hitBox.y,this.hitBox.w,this.hitBox.h)
+            this.ctx.stroke()
+            this.ctx.restore()
+        }
 
 
     }
