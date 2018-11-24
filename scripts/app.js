@@ -8,6 +8,7 @@ const canvaDimension = {
 }
 let globalProp = []
 
+
 const posMouse = {
     x : null,
     y : null
@@ -51,10 +52,8 @@ const clear =()=>
     ctx.rect(0,0,canvaDimension.width, canvaDimension.height)
     ctx.fill()
 }
-
 //selection function 
 const selection= ()=>{
-
 
     //calc selction area
     posSelect.x =posLeft.x
@@ -78,7 +77,7 @@ const selection= ()=>{
         if( (globalProp[i].hitBox.x >=posSelect.x && globalProp[i].hitBox.x <= posMouse.x) || (globalProp[i].hitBox.x <=posSelect.x && globalProp[i].hitBox.x >= posMouse.x) ){
             if( (globalProp[i].hitBox.y >=posSelect.y && globalProp[i].hitBox.y <= posMouse.y) || (globalProp[i].hitBox.y <=posSelect.y && globalProp[i].hitBox.y >= posMouse.y) ){
                 globalProp[i].select = true
-                // console.log('true')
+
                 
             }
             
@@ -109,6 +108,8 @@ canva.addEventListener('mousedown', (event)=>{
 
 canva.addEventListener('mouseup', ()=>{
     posLeft.state = false 
+    tempClick = true
+    
 
 
 })
@@ -116,7 +117,8 @@ canva.addEventListener('mouseup', ()=>{
 canva.addEventListener('click', (event)=>{
     posLeftClick.x = event.clientX
     posLeftClick.y = event.clientY
-    
+
+
 })
 
 //right click
@@ -128,18 +130,6 @@ canva.addEventListener('contextmenu', (event)=>{
     console.log( posRightClick.x, posRightClick.y)
 
 })
-//esc from selection event
-window.addEventListener('keydown', (event)=>{
-    
-    if(event.keyCode ==27){
-        for(let i= 0; i< globalProp.length; i++)
-        {
-            globalProp[i].select = false
-        }
-    }
-    
-})
-
 //resize event 
 window.addEventListener('resize', ()=>{
     resize()
@@ -180,6 +170,13 @@ const main = ()=>{
 
     if(posLeft.state){
         selection()
+    }
+    if(tempClick && posLeft.state){
+        for(let i=0; i<globalProp.length; i++){
+            globalProp[i].select = false
+        }
+        tempClick = false
+
     }
      
 }
