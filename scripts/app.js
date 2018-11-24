@@ -142,7 +142,7 @@ window.addEventListener('resize', ()=>{
 *   MAIN FUNCTION
 */ 
 resize()
-const map = new Mapping(ctx,canvaDimension.width, canvaDimension.height,1)
+
 
 
 for(let i=0; i <20; i++){
@@ -164,7 +164,7 @@ const main = ()=>{
     window.requestAnimationFrame(main)
     clear()
     for(let i=0; i<globalProp.length; i++){
-        globalProp[i].create()
+        globalProp[i].mouve()
     }
 
 

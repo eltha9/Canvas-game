@@ -70,30 +70,32 @@ class People{
     }
     
     create(){
+
+
         this.ctx.save()        
         this.ctx.beginPath()
         this.ctx.fillStyle = "black"
         this.ctx.arc(this.x, this.y, 20, 0,Math.PI*2)
         this.ctx.fill()
+        if(this.select){
+            this.ctx.strokeStyle = "red"
+            this.ctx.stroke()
+        }
         this.ctx.restore()
+
+
+
+        
 
         this.hitBox.x = this.x -20
         this.hitBox.y = this.y -20
         this.hitBox.h = 20*2
         this.hitBox.w = 20*2
-
-        if(this.select){
-            this.ctx.save()
-            this.ctx.strokeStyle = "red"
-            this.ctx.beginPath()
-            this.ctx.rect(this.hitBox.x,this.hitBox.y,this.hitBox.w,this.hitBox.h)
-            this.ctx.stroke()
-            this.ctx.restore()
-        }
-
-
     }
 
+    mouve(){
+        this.create()
+    }
 
 
 
