@@ -1,13 +1,12 @@
 const canva = document.querySelector('.frame')
 const ctx = canva.getContext('2d')
 
-//Global variable for this file 
+//Global variable for this file
+let globalProp = [] 
 const canvaDimension = {
     width: window.innerWidth,
     height: window.innerHeight
 }
-let globalProp = []
-
 
 const posMouse = {
     x : null,
@@ -25,7 +24,8 @@ const posLeftClick = {
 }
 const posRightClick = {
     x:null,
-    y: null
+    y: null,
+    state : false
 }
 const posSelect ={
     x: null, //position X of the selection 
@@ -110,6 +110,7 @@ canva.addEventListener('mouseup', ()=>{
     posLeft.state = false 
     tempClick = true
     
+    posRightClick.state = false
 
 
 })
@@ -127,6 +128,7 @@ canva.addEventListener('contextmenu', (event)=>{
     
     posRightClick.x = event.clientX
     posRightClick.y = event.clientY
+    posRightClick.state = true
     console.log( posRightClick.x, posRightClick.y)
 
 })
@@ -146,14 +148,10 @@ resize()
 
 
 for(let i=0; i <20; i++){
-    const villa = new People(ctx, Math.random()* canvaDimension.width,Math.random()* canvaDimension.height,1,"Wagon")    
-    villa.create()
-    globalProp.push(villa)
+    const buble= new BublePeople(ctx, Math.random()* canvaDimension.width,Math.random()* canvaDimension.height,"Wagon")    
+    buble.create()
+    globalProp.push(buble)
 }
-
-
-
-// map.tree(200,200,1)
 
 
 
@@ -163,8 +161,31 @@ for(let i=0; i <20; i++){
 const main = ()=>{
     window.requestAnimationFrame(main)
     clear()
-    for(let i=0; i<globalProp.length; i++){
-        globalProp[i].mouve()
+    // for(let i=0; i<globalProp.length; i++){
+    //     globalProp[i].mouve()
+    // }
+
+    if(posRightClick.state){
+        console.log('yep')
+        for(let i=0; i<globalProp.length; i++){
+            if(globalProp[i].select){
+                globalProp[i].mouve(posRightClick.x,posRightClick.y)
+            }
+            else{
+                globalProp[i].mouve()
+            }
+            
+            if(globalProp[i].x == posRightClick.x && globalProp[i].y == posRightClick.y ){
+                posRightClick.state = false
+            }else{
+                posRightClick.state = true
+            }
+
+        }
+    }else{
+        for(let i=0; i<globalProp.length; i++){
+            globalProp[i].mouve()
+        }
     }
 
 
@@ -179,6 +200,8 @@ const main = ()=>{
 
     }
      
+    
+
 }
 
 main()
