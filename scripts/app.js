@@ -1,28 +1,35 @@
-const canva = document.querySelector('.frame')
-const ctx = canva.getContext('2d')
+const canva = document.querySelector('.js-canvas') // just the DOM selection of the canvas
+const ctx = canva.getContext('2d') // context of the canvas
 
-//Global variable for this file 
-const canvaDimension = {
+/*
+*   GLOBAL VARIABLE
+*/
+const canvaDimension = {// made the canvas great again
     width: window.innerWidth,
     height: window.innerHeight
 }
-let globalProp = []
 
-const posMouse = {
+let globalProp = []// contain all the prop in the canvas 
+let tempClick = false
+const maxProp = 6000
+
+
+//all the varriable for the used for the mouse event's
+const posMouse = { // for the mouse mouve
     x : null,
     y : null
 }
 
-const posLeft = {
+const posLeft = { // for the "mouseup" and "mousedown"
     x : null,
     y : null,
     state : false // mouse up on false
 }
-const posLeftClick = {
+const posLeftClick = {// mouse position for the left click
     x: null,
     y : null
 }
-const posRightClick = {
+const posRightClick = {//mouse position for the right click
     x:null,
     y: null,
     state : false
@@ -33,10 +40,11 @@ const posSelect ={
     w : null,
     h : null
 }
-let tempClick = false
 
-//##### GLOBAL FUNCTION #########
-const resize= ()=>{
+/*
+*   GLOBAL FUNCTION
+*/
+const resize= ()=>{// an important function
     canvaDimension.width= window.innerWidth
     canvaDimension.height= window.innerHeight
 
@@ -44,7 +52,7 @@ const resize= ()=>{
     canva.height = canvaDimension.height
 }
 
-//clear function 
+//clear function, a function who clear the canvas
 const clear =()=>
 {
     ctx.beginPath()
@@ -63,7 +71,7 @@ const selection= ()=>{
     posSelect.w =posMouse.x- posLeft.x
     posSelect.h =posMouse.y- posLeft.y
 
-    //beautify selection
+    //beautify area of the selection
     ctx.save()
     ctx.beginPath()
     ctx.fillStyle = "hsl(53, 91%, 50%)"
@@ -74,7 +82,7 @@ const selection= ()=>{
     ctx.fill()
     ctx.restore()
 
-    for(let i =0; i<globalProp.length; i++)
+    for(let i =0; i<globalProp.length; i++)// basicly the main loop to konw wich prop will be selected
     {
         if( (globalProp[i].hitBox.x >=posSelect.x && globalProp[i].hitBox.x <= posMouse.x) || (globalProp[i].hitBox.x <=posSelect.x && globalProp[i].hitBox.x >= posMouse.x) ){
             if( (globalProp[i].hitBox.y >=posSelect.y && globalProp[i].hitBox.y <= posMouse.y) || (globalProp[i].hitBox.y <=posSelect.y && globalProp[i].hitBox.y >= posMouse.y) ){
@@ -89,7 +97,10 @@ const selection= ()=>{
 }
 
 
-//####EVENT ON CANVAS#####
+
+/*
+*   EVENT'S ON CANVAS
+*/
 // mouse move
 canva.addEventListener('mousemove', (event)=>{
     posMouse.x = event.clientX
@@ -113,6 +124,7 @@ canva.addEventListener('mouseup', ()=>{
 
 
 })
+
 //left click
 canva.addEventListener('click', (event)=>{
     posLeftClick.x = event.clientX
@@ -129,9 +141,15 @@ canva.addEventListener('contextmenu', (event)=>{
     posRightClick.state = true
     
 })
-//esc from selection event
+/*
+*   Keyboards event's:
+        -unselect
+        -create a prop
+        -select all
+        -reset (it's kind of a reset, but more a go to the first position)
+*/
 window.addEventListener('keydown', (event)=>{
-    if(event.keyCode ==27){
+    if(event.keyCode ==27){// unselect the selected prop
         for(let i= 0; i< globalProp.length; i++)
         {
             globalProp[i].select = false
@@ -140,14 +158,19 @@ window.addEventListener('keydown', (event)=>{
         posRightClick.y = null
     }
     
-
-    if(event.keyCode == 78){
-        const buble = new BublePeople(ctx, posMouse.x, posMouse.y,"va")
-        buble.create()
-        globalProp.push(buble)
-        
+    
+    if(event.keyCode == 78){// create a new prop with unique abilities (yep you will see)
+        if(globalProp.length<maxProp)
+        {
+            const buble = new BublePeople(ctx, posMouse.x, posMouse.y, "spec")
+            buble.create()
+            globalProp.push(buble) 
+        }else{
+            console.log('Congratulation you reach the maximum prop limit')
+            console.log(`For the safety of your computer and eyes, the maximum number of prop is ${maxProp} =/`)
+        }        
     }
-    if(event.keyCode == 17 || event.keyCode ==91){ // select all prop (work for mac cmd+a, linux&windows ctrl+a)
+    if(event.keyCode == 17 || event.keyCode ==91){ // select all prop (work for mac cmd+a, linux & windows ctrl+a)
         window.addEventListener('keydown', (_event)=>{
             if(_event.keyCode == 65){
                 for(let i= 0; i< globalProp.length; i++)
@@ -157,6 +180,16 @@ window.addEventListener('keydown', (event)=>{
             }
         })
         
+    }
+    if(event.keyCode==82){ // reset (work pressing the "r" key)
+    
+        for(let i= 0; i< globalProp.length; i++)
+        {
+            globalProp[i].x = globalProp[i].first.x
+            globalProp[i].y = globalProp[i].first.y
+            globalProp[i].hitBox.x = globalProp[i].first.x-globalProp[i].radius
+            globalProp[i].hitBox.y = globalProp[i].first.y-globalProp[i].radius
+        }
     }
     
     
@@ -176,17 +209,12 @@ window.addEventListener('resize', ()=>{
 resize()
 
 
-
-for(let i=0; i <20; i++){
-    const villa = new BublePeople(ctx, Math.random()* canvaDimension.width,Math.random()* canvaDimension.height,"va")    
+//create the first  prop's
+for(let i=0; i <1000; i++){
+    const villa = new BublePeople(ctx, Math.random()* canvaDimension.width,Math.random()* canvaDimension.height, "normal")    
     villa.create()
     globalProp.push(villa)
 }
-
-
-
-
-
 
 
 /*
@@ -194,15 +222,18 @@ for(let i=0; i <20; i++){
 */
 const main = ()=>{
     window.requestAnimationFrame(main)
-    clear()
-    for(let i=0; i<globalProp.length; i++){
+    clear()//clear canvas
+    for(let i=0; i<globalProp.length; i++){ // always drawing the prop's
         globalProp[i].mouve()
     }
-
-    for(let i=0; i< globalProp.length; i++){
+    
+    
+    for(let i=0; i< globalProp.length; i++){//move the selected prop
         if(globalProp[i].select && posRightClick.state){
             if(posRightClick.x != null && posRightClick.y != null){
+
                 globalProp[i].mouve(posRightClick.x, posRightClick.y)
+                
             }
             
             
@@ -212,9 +243,7 @@ const main = ()=>{
 
     if(posLeft.state){// selection function
         selection()
-    }
-     
+    }    
 }
 
 main()
-
