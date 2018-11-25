@@ -10,24 +10,17 @@ class BublePeople{
         this.y = y
         
         this.select = false 
-        this.speed = 1
-        
+        this.speed = 2
+        this.radius = 12
 
-        this.prop = {
-            damages: null, //int
-            resistance: null, ///int
-            build: undefined, // bollean
-            life: null//int
-
-        }
 
     
 
         this.hitBox = {
-            x : this.x -20,
-            y : this.y -20,
-            h : 20*2,
-            w : 20*2
+            x : this.x -this.radius,
+            y : this.y -this.radius,
+            h : this.radius*2,
+            w : this.radius*2
         }
 
 
@@ -42,19 +35,36 @@ class BublePeople{
         if(this.select){
             this.ctx.fillStyle = "orange"
         }
-        this.ctx.arc(this.x, this.y, 20, 0,Math.PI*2)
+        this.ctx.arc(this.x, this.y, this.radius, 0,Math.PI*2)
         this.ctx.fill()
         this.ctx.restore()
 
+
     }
 
-    mouve(x, y){
+    mouve(x = this.x, y=this.y){
 
-        if(this.select && posRightClick.state)
+        if(this.select)
         {
-
-            this.x -=this.speed 
-            this.y -=this.speed
+            if(this.x !=x && this.y !=y){
+                let direction = {
+                    x:1,
+                    y:1
+                }
+                if(x<this.x){
+                    direction.x= -1
+                }
+                if(y<this.y){
+                    direction.y= -1
+                }
+    
+    
+                this.x =  this.x +this.speed *direction.x
+                this.y =  this.y +this.speed *direction.y
+                this.hitBox.x = this.x-this.radius
+                this.hitBox.y = this.y-this.radius
+            }
+            
         }
         
         this.create()

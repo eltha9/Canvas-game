@@ -1,12 +1,12 @@
 const canva = document.querySelector('.frame')
 const ctx = canva.getContext('2d')
 
-//Global variable for this file
-let globalProp = [] 
+//Global variable for this file 
 const canvaDimension = {
     width: window.innerWidth,
     height: window.innerHeight
 }
+let globalProp = []
 
 const posMouse = {
     x : null,
@@ -52,8 +52,10 @@ const clear =()=>
     ctx.rect(0,0,canvaDimension.width, canvaDimension.height)
     ctx.fill()
 }
+
 //selection function 
 const selection= ()=>{
+
 
     //calc selction area
     posSelect.x =posLeft.x
@@ -77,7 +79,7 @@ const selection= ()=>{
         if( (globalProp[i].hitBox.x >=posSelect.x && globalProp[i].hitBox.x <= posMouse.x) || (globalProp[i].hitBox.x <=posSelect.x && globalProp[i].hitBox.x >= posMouse.x) ){
             if( (globalProp[i].hitBox.y >=posSelect.y && globalProp[i].hitBox.y <= posMouse.y) || (globalProp[i].hitBox.y <=posSelect.y && globalProp[i].hitBox.y >= posMouse.y) ){
                 globalProp[i].select = true
-
+                
                 
             }
             
@@ -108,9 +110,6 @@ canva.addEventListener('mousedown', (event)=>{
 
 canva.addEventListener('mouseup', ()=>{
     posLeft.state = false 
-    tempClick = true
-    
-    posRightClick.state = false
 
 
 })
@@ -118,8 +117,7 @@ canva.addEventListener('mouseup', ()=>{
 canva.addEventListener('click', (event)=>{
     posLeftClick.x = event.clientX
     posLeftClick.y = event.clientY
-
-
+    
 })
 
 //right click
@@ -129,9 +127,41 @@ canva.addEventListener('contextmenu', (event)=>{
     posRightClick.x = event.clientX
     posRightClick.y = event.clientY
     posRightClick.state = true
-    console.log( posRightClick.x, posRightClick.y)
-
+    
 })
+//esc from selection event
+window.addEventListener('keydown', (event)=>{
+    if(event.keyCode ==27){
+        for(let i= 0; i< globalProp.length; i++)
+        {
+            globalProp[i].select = false
+        }
+        posRightClick.x = null
+        posRightClick.y = null
+    }
+    
+
+    if(event.keyCode == 78){
+        const buble = new BublePeople(ctx, posMouse.x, posMouse.y,"va")
+        buble.create()
+        globalProp.push(buble)
+        
+    }
+    if(event.keyCode == 17 || event.keyCode ==91){ // select all prop (work for mac cmd+a, linux&windows ctrl+a)
+        window.addEventListener('keydown', (_event)=>{
+            if(_event.keyCode == 65){
+                for(let i= 0; i< globalProp.length; i++)
+                {
+                    globalProp[i].select = true
+                }
+            }
+        })
+        
+    }
+    
+    
+})
+
 //resize event 
 window.addEventListener('resize', ()=>{
     resize()
@@ -148,10 +178,14 @@ resize()
 
 
 for(let i=0; i <20; i++){
-    const buble= new BublePeople(ctx, Math.random()* canvaDimension.width,Math.random()* canvaDimension.height,"Wagon")    
-    buble.create()
-    globalProp.push(buble)
+    const villa = new BublePeople(ctx, Math.random()* canvaDimension.width,Math.random()* canvaDimension.height,"va")    
+    villa.create()
+    globalProp.push(villa)
 }
+
+
+
+
 
 
 
@@ -161,47 +195,25 @@ for(let i=0; i <20; i++){
 const main = ()=>{
     window.requestAnimationFrame(main)
     clear()
-    // for(let i=0; i<globalProp.length; i++){
-    //     globalProp[i].mouve()
-    // }
+    for(let i=0; i<globalProp.length; i++){
+        globalProp[i].mouve()
+    }
 
-    if(posRightClick.state){
-        console.log('yep')
-        for(let i=0; i<globalProp.length; i++){
-            if(globalProp[i].select){
-                globalProp[i].mouve(posRightClick.x,posRightClick.y)
-            }
-            else{
-                globalProp[i].mouve()
+    for(let i=0; i< globalProp.length; i++){
+        if(globalProp[i].select && posRightClick.state){
+            if(posRightClick.x != null && posRightClick.y != null){
+                globalProp[i].mouve(posRightClick.x, posRightClick.y)
             }
             
-            if(globalProp[i].x == posRightClick.x && globalProp[i].y == posRightClick.y ){
-                posRightClick.state = false
-            }else{
-                posRightClick.state = true
-            }
+            
+        }
 
-        }
-    }else{
-        for(let i=0; i<globalProp.length; i++){
-            globalProp[i].mouve()
-        }
     }
 
-
-    if(posLeft.state){
+    if(posLeft.state){// selection function
         selection()
     }
-    if(tempClick && posLeft.state){
-        for(let i=0; i<globalProp.length; i++){
-            globalProp[i].select = false
-        }
-        tempClick = false
-
-    }
      
-    
-
 }
 
 main()
